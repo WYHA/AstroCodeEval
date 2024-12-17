@@ -1,86 +1,69 @@
 # Astronomical Code Generation Evaluation Dataset
 
 ## Dataset Summary
-
-The Astronomical Code Generation Evaluation Dataset contains 652 unique task instances designed to evaluate code generation models within the context of astronomy. Each instance includes prompts in natural language and their corresponding canonical code solutions, utilizing two widely-used Python libraries: **Astropy** and **Astroquery**. This dataset is structured to facilitate the assessment of model performance using the pass@k metric, thus providing researchers and developers with reliable benchmarks for evaluating code generation capabilities.
+The Astronomical Code Generation Evaluation Dataset is a specialized collection of 652 programming problems designed to evaluate code generation models within the field of astronomy. Each data in the dataset features a natural language instruction (prompt) paired with a canonical solution—an expected code output—and a test code to validate the generated code.
 
 ## Supported Tasks and Leaderboards
-
-- **Language:** Python
-- **Libraries Used:** Astropy and Astroquery
-- **Evaluation Metric:** pass@k
+### Languages
+The tasks are written in Python, and the natural language instructions are in English.
 
 ## Dataset Structure
+The dataset adheres to a straightforward JSON format with the following fields:
 
-The dataset is structured as follows:
-
-```plaintext
-astronomy_code_eval/
-    ├── README.md
-    ├── dataset.json
-    ├── examples/
-    │   └── example_0.json
-    └── scripts/
-        └── evaluation_script.py
-```
-
-### Files and Directories
-
-- **`README.md`**: This file provides an overview of the dataset, its usage, and any relevant information regarding its structure and content.
-  
-- **`dataset.json`**: This JSON file contains all 652 instances in the dataset, structured in the following format:
-
-  ```json
-  {
-      "test_id": "test/0",
-      "prompt": "Create a function to retrieve the latest astronomical data using Astroquery.",
-      "canonical_solution": "def get_latest_data():\n    from astroquery.jplhorizons import Horizons\n    obj = Horizons(id='1994pc', location='500', epochs={'et': [2459200]})\n    return obj.ephemerides()",
-      "test_code": "def check(candidate):\n    assert candidate() is not None",
-      "data_source": "astropy/astroquery"
-  }
-  ```
-
-- **`examples/`**: Directory containing example instances of the dataset, formatted as JSON files. Each file demonstrates a single data instance for clarity and understanding.
-
-- **`scripts/`**: This directory includes scripts for evaluating the model's performance against the dataset. For example, `evaluation_script.py` may contain functions for calculating the pass@k metric based on generated outputs.
-
-## Data Instances
-
-Each instance in the dataset follows this structure:
-
-- **`test_id`**: A unique identifier for the data sample.
-- **`prompt`**: A natural language description of the coding task.
-- **`canonical_solution`**: The expected solution, expressed in proper Python code.
-- **`test_code`**: A test function to validate the correctness of the generated code.
-- **`data_source`**: Specifies the libraries utilized in the solution (in this case, "astropy/astroquery").
-
-## Dataset Creation
-
-### Curation Rationale
-
-This dataset was created to provide a comprehensive evaluation framework for code generation models within the astronomy domain. Given that many models are often trained on generalized datasets, a specialized dataset helps ensure that evaluations are relevant and meaningful for astronomy-related applications.
-
-### Source Data
-
-The dataset was meticulously crafted by domain experts in both astronomy and machine learning, ensuring rigorous attention to detail in how each prompt and solution was formulated.
-
-### Considerations for Using the Data
-
-As with any code generation tasks, ensure that any generated Python code is executed in a safe environment to mitigate risks associated with running unverified code.
-
-### Licensing Information
-
-This dataset is licensed under the MIT License, allowing for broad usage within both academic and commercial environments.
-
-## Citation Information
-
-If you find this dataset useful, please cite it as follows:
-
-```bibtex
-@misc{astronomy_code_eval,
-      title={Astronomical Code Generation Evaluation Dataset},
-      author={Your Name},
-      year={2023},
-      url={https://github.com/yourusername/astronomy_code_eval}
+```json
+{
+    "test_id": "test/0",
+    "prompt": "",
+    "canonical_solution": "",
+    "test_code": "",
+    "data_source": "astropy/astroquery"
 }
 ```
+
+### Data Fields
+- **test_id**: An identifier for the data sample.
+- **prompt**: A natural language instruction that describes the coding task.
+- **canonical_solution**: The correct implementation for the task outlined in the prompt.
+- **test_code**: A code designed to validate the generated code.
+- **data_source**: Indicates the source of the dataset, such as `astropy` or `astroquery`.
+
+## Dataset Creation
+### Source Data
+
+The dataset was created by extracting complete code blocks from the documentation of the Python libraries [Astropy](https://docs.astropy.org/en/stable/index_user_docs.html) and [Astroquery](https://astroquery.readthedocs.io/en/latest/#). For this purpose, we utilized GPT-4 to extract code blocks that accomplish specific tasks and ensured that the extracted code blocks were deduplicated.
+
+For the natural language prompts, we also employed GPT-4 to generate descriptive instructions that reflect the intent of each code block. These prompts were subsequently reviewed and refined by human experts to ensure clarity and precision.
+
+To construct the test code, we categorized the return results of the code according to their Python type and generated the test code using GPT-4, which was then manually verified for accuracy.
+
+
+### Personal and Sensitive Information
+None.
+
+### Considerations for Using the Data
+When evaluating generated Python code against this dataset, execute it in a safe and controlled environment to prevent any potential risks associated with executing untrusted code.
+
+## File Structure
+To maintain an organized and comprehensive structure for your dataset repository, consider the following file and folder structure:
+
+```
+astronomical_code_generation_dataset/
+│
+├── data/
+│   ├── dataset.json                # The main dataset file in JSON format
+│
+├── tests/
+│   ├── test_cases.py               # Unit tests to validate the test_code against canonical solutions
+│
+├── examples/
+│   ├── example_usage.py            # Examples of how to use the dataset
+│
+├── README.md                       # This README file
+│
+└── requirements.txt                # Dependencies for running tests or examples (e.g., astropy, astroquery)
+```
+
+## License
+This dataset is provided under [Your Chosen License]. Please ensure you understand the terms before using or distributing the dataset.
+
+This structure will help you keep your dataset organized and make it easier for users to navigate and understand how to use the dataset effectively.
