@@ -3,7 +3,7 @@
 ## Dataset Summary
 The Astronomical Code Generation Evaluation Dataset is a specialized collection of 652 programming tasks designed to evaluate code generation models within the field of astronomy. Each entry in the dataset includes a natural language instruction (prompt) that describes the coding task, a canonical solution representing the expected correct output, and a test code designed to validate the generated code's correctness.
 
-This dataset aims to gauge the ability of code generation models in understanding and applying concepts from common astronomy-related Python libraries—Astropy and Astroquery. By providing domain-specific tasks, the dataset ensures that evaluations are relevant and meaningful for applications in astronomical research and analysis.
+This dataset aims to gauge the ability of code generation models in understanding and applying concepts from common astronomy-related Python libraries—Astropy[https://github.com/astropy/astropy] and Astroquery[https://github.com/astropy/astroquery]. By providing domain-specific tasks, the dataset ensures that evaluations are relevant and meaningful for applications in astronomical research and analysis.
 
 ## Supported Tasks and Leaderboards
 ### Languages
