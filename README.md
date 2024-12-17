@@ -66,6 +66,4 @@ astronomical_code_generation_dataset/
 ```
 
 ## License
-This dataset is provided under [Your Chosen License]. Please ensure you understand the terms before using or distributing the dataset.
-
-This structure will help you keep your dataset organized and make it easier for users to navigate and understand how to use the dataset effectively.
+MIT License
