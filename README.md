@@ -31,6 +31,20 @@ The dataset adheres to a straightforward JSON format with the following fields:
 - **test_code**: A code designed to validate the generated code.
 - **data_source**: Indicates the source of the dataset, such as `astropy` or `astroquery`.
 
+## Usage
+To use the dataset, follow these steps:
+
+1. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. To run the code generation and evaluation:
+   ```bash
+   python run_answers.py 
+   python eval.py
+   ```
+   
 ## Dataset Creation
 ### Source Data
 
@@ -46,26 +60,6 @@ None.
 
 ### Considerations for Using the Data
 When evaluating generated Python code against this dataset, execute it in a safe and controlled environment to prevent any potential risks associated with executing untrusted code.
-
-## File Structure
-To maintain an organized and comprehensive structure for your dataset repository, consider the following file and folder structure:
-
-```
-astronomical_code_generation_dataset/
-│
-├── data/
-│   ├── dataset.json                # The main dataset file in JSON format
-│
-├── tests/
-│   ├── test_cases.py               # Unit tests to validate the test_code against canonical solutions
-│
-├── examples/
-│   ├── example_usage.py            # Examples of how to use the dataset
-│
-├── README.md                       # This README file
-│
-└── requirements.txt                # Dependencies for running tests or examples (e.g., astropy, astroquery)
-```
 
 ## License
 This dataset is provided under [Your Chosen License]. Please ensure you understand the terms before using or distributing the dataset.
