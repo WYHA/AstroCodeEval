@@ -16,7 +16,7 @@ The dataset adheres to a straightforward JSON format with the following fields:
     "prompt_zh": "使用标准差为2的一维高斯滤波器对数组[1, 4, 5, 6, 5, 7, 8]进行平滑处理，并在卷积计算时将边界视为扩展模式，返回处理后的数组。\n",
     "canonical_solution": "def canonical_solution():\n  from astropy.convolution import Gaussian1DKernel, convolve\n  gauss = Gaussian1DKernel(stddev=2)\n  return convolve([1, 4, 5, 6, 5, 7, 8], gauss, boundary='extend')\n\n\n",
     "test_code": [
-        "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查形状是否相同\n    if data1.shape != data2.shape:\n        return False\n    # 检查内容是否相同\n    # 使用 np.allclose 而不是 np.array_equal 来处理可能的浮点误差\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
+        "\nimport numpy as np\n\ndef test_code(data1, data2):\n    if data1.shape != data2.shape:\n        return False\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
     ],
     "data_source": "Astropy"
 }
