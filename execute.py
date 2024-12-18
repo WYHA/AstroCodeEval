@@ -1,22 +1,18 @@
 from typing import Optional, Dict
 import contextlib
 import traceback
-# import signal
 import io
 import re
 import sys
 import copy
-from timeout_decorator import timeout, TimeoutError
-import time
-import func_timeout
-from func_timeout import func_set_timeout
 import logging
+from func_timeout import func_set_timeout
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 
 class WriteOnlyStringIO(io.StringIO):
     """ StringIO that throws an exception when it's read from """
-
     def read(self, *args, **kwargs):
         raise IOError
 
@@ -27,22 +23,33 @@ class WriteOnlyStringIO(io.StringIO):
         raise IOError
 
     def readable(self, *args, **kwargs):
-        """ Returns True if the IO object can be read. """
+        """ Returns False as the IO object cannot be read. """
         return False
-    
+
+
 class redirect_stdin(contextlib._RedirectStream):  # type: ignore
     _stream = 'stdin'
 
+
 @contextlib.contextmanager
 def swallow_io():
+    """ Context manager that redirects stdout, stderr, and stdin to a WriteOnlyStringIO. """
     stream = WriteOnlyStringIO()
-    with contextlib.redirect_stdout(stream):
-        with contextlib.redirect_stderr(stream):
-            with redirect_stdin(stream):
-                yield
+    with contextlib.redirect_stdout(stream), contextlib.redirect_stderr(stream), redirect_stdin(stream):
+        yield
+
 
 @func_set_timeout(60)
-def execute_program(check_program,traceback_tag):
+def execute_program(check_program: str, traceback_tag: bool):
+    """ Executes a given Python program and captures output or exceptions.
+
+    Args:
+        check_program (str): The code to be executed.
+        traceback_tag (bool): If True, include traceback in the output on failure.
+
+    Returns:
+        tuple: Result of execution and globals defined by the executed code.
+    """
     try:
         exec_globals = {}
         with swallow_io():
@@ -54,72 +61,106 @@ def execute_program(check_program,traceback_tag):
             traceback_lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
             result = traceback_lines
         else:
-            result = "failed: {}".format(e)
-    return result,exec_globals
+            result = f"failed: {e}"
+    return result, exec_globals
 
-def insert_random_seed(code):
+
+def insert_random_seed(code: str) -> str:
+    """ Inserts a random seed into the provided code for reproducibility.
+
+    Args:
+        code (str): The original code to be modified.
+
+    Returns:
+        str: The modified code with random seed inserted.
+    """
     code_temp = copy.deepcopy(code)
+
+    # Insert seed for canonical_solution function
     if 'canonical_solution' in code:
-        code_temp = copy.deepcopy(code)
         code_temp = 'def canonical_solution():'.join(code_temp.split('def canonical_solution():')[1:])
-        code_temp = code_temp.replace('def canonical_solution():\n','').replace('def canonical_solution():','')
-        tab_can = re.findall('[\n ]{0,}',code_temp)[0]
-        code = code.replace('def canonical_solution():\n','def canonical_solution():\n{}import numpy as np\n{}np.random.seed(10)\n'.format(tab_can,tab_can))
+        code_temp = code_temp.replace('def canonical_solution():\n', '').replace('def canonical_solution():', '')
+        tab_can = re.findall('[\n ]{0,}', code_temp)[0]
+        code = code.replace('def canonical_solution():\n', f'def canonical_solution():\n{tab_can}import numpy as np\n{tab_can}np.random.seed(10)\n')
+
+    # Insert seed for generate_function function
     elif 'generate_function' in code:
-        code_temp = copy.deepcopy(code)
         code_temp = 'def generate_function():'.join(code_temp.split('def generate_function():')[1:])
-        code_temp = code_temp.replace('def generate_function():\n','').replace('def generate_function():','')
-        tab_gen = re.findall('[\n ]{0,}',code_temp)[0]
-        code = code.replace('def generate_function():\n','def generate_function():\n{}import numpy as np\n{}np.random.seed(10)\n'.format(tab_gen,tab_gen))
+        code_temp = code_temp.replace('def generate_function():\n', '').replace('def generate_function():', '')
+        tab_gen = re.findall('[\n ]{0,}', code_temp)[0]
+        code = code.replace('def generate_function():\n', f'def generate_function():\n{tab_gen}import numpy as np\n{tab_gen}np.random.seed(10)\n')
+
+    # Modify default_rng if present
     if 'rng = np.random.default_rng()' in code:
-        code = code.replace('np.random.default_rng()','np.random.default_rng(seed=42)')
+        code = code.replace('np.random.default_rng()', 'np.random.default_rng(seed=42)')
     else:
-        num = re.findall('np.random.default_rng\((\d*)\)',code)
+        num = re.findall('np.random.default_rng\((\d*)\)', code)
         if num:
-            code = code.replace('np.random.default_rng({})'.format(num[0]),'np.random.default_rng(seed=42)')
+            code = code.replace(f'np.random.default_rng({num[0]})', 'np.random.default_rng(seed=42)')
+    
     return code
 
-def execute_programs(canonical_solution=None,generate_code=None,test_code=None,tuple=False,tuple_index=0,traceback_tag=False):
+
+def execute_programs(canonical_solution: Optional[str] = None, generate_code: Optional[str] = None,
+                     test_code: Optional[str] = None, is_tuple: bool = False,
+                     tuple_index: int = 0, traceback_tag: bool = False):
+    """
+    Execute a series of programs based on provided solutions and testing code.
+
+    Args:
+        canonical_solution (str): The canonical solution code to execute.
+        generate_code (str): The generated code to test.
+        test_code (str): The test code to validate the results.
+        is_tuple (bool): If True, treats outputs as tuples.
+        tuple_index (int): The index to access in tuple outputs.
+        traceback_tag (bool): If True, includes traceback in execution.
+
+    Returns:
+        tuple: A tuple containing success status, result message, answer, and executed code.
+    """
     if canonical_solution and not generate_code:
-        logging.info('执行标准代码')
+        logging.info('Executing canonical solution code')
         check_program = canonical_solution + '\n' + 'answer = canonical_solution()'
     elif generate_code and not canonical_solution:
-        logging.info('执行生成代码')
+        logging.info('Executing generated code')
         check_program = generate_code + '\n' + 'answer = generate_function()'
-    elif canonical_solution and generate_code and test_code and not tuple:
+    elif canonical_solution and generate_code and test_code:
+        # Insert random seed for both solutions
         canonical_solution = insert_random_seed(canonical_solution)
         generate_code = insert_random_seed(generate_code)
-        logging.info('执行非tuple类型测试代码')
-        check_program = canonical_solution + '\n' + generate_code + '\n' + test_code + '\n' + 'data1 = canonical_solution()\ndata2 = generate_function()\nassert test_code(data1,data2)==True\nanswer = test_code(data1,data2)'
-    elif canonical_solution and generate_code and test_code and tuple:
-        canonical_solution = insert_random_seed(canonical_solution)
-        generate_code = insert_random_seed(generate_code)
-        check_program = canonical_solution + '\n' + generate_code + '\n' + test_code + '\n' + 'data1 = canonical_solution()[{}]\ndata2 = generate_function()[{}]\nassert test_code(data1,data2)==True\nanswer = test_code(data1,data2)'.format(tuple_index,tuple_index)
+
+        if not is_tuple:
+            logging.info('Executing non-tuple type test code')
+            check_program = (
+                f"{canonical_solution}\n{generate_code}\n{test_code}\n"
+                "data1 = canonical_solution()\ndata2 = generate_function()\n"
+                "assert test_code(data1, data2) == True\n"
+                "answer = test_code(data1, data2)"
+            )
+        else:
+            logging.info('Executing tuple type test code')
+            check_program = (
+                f"{canonical_solution}\n{generate_code}\n{test_code}\n"
+                f"data1 = canonical_solution()[{tuple_index}]\n"
+                f"data2 = generate_function()[{tuple_index}]\n"
+                "assert test_code(data1, data2) == True\n"
+                "answer = test_code(data1, data2)"
+            )
     else:
-        AssertionError('输入存在错误')
+        raise AssertionError('Input parameters are incorrect')
 
     try:
-        result,exec_globals = execute_program(check_program,traceback_tag)
+        result, exec_globals = execute_program(check_program, traceback_tag)
     except func_timeout.exceptions.FunctionTimedOut:
-        logging.info("执行已超时60秒")
+        logging.info("Execution timed out after 60 seconds")
         result = 'timeout'
         exec_globals = {}
-    
-    if result=='passed':
-        answer = exec_globals['answer']
-        logging.info(f'代码成功执行')
-        return True,result,answer,check_program
-    else:   
-        answer = ''
-        logging.info(f'代码报错，错误代码：{check_program} 原因是: {result}')
-        return False,result,answer,check_program
 
-if __name__=='__main__':
-    generate_function = "def generate_function():\n  from astropy import units as u\n  from astropy.coordinates import SkyCoord\n  c1 = SkyCoord(ra=10*u.degree, dec=9*u.degree, frame='icrs')\n  c2 = SkyCoord(ra=11*u.degree, dec=10*u.degree, frame='fk5')\n  return c1.separation(c2)\n"
-    canonical_solution = "def canonical_solution():\n  from astropy import units as u\n  from astropy.coordinates import SkyCoord\n  c1 = SkyCoord(ra=10*u.degree, dec=9*u.degree, frame='icrs')\n  c2 = SkyCoord(ra=11*u.degree, dec=10*u.degree, frame='fk5')\n  return c1.separation(c2)\n"
-    text_code = "assert canonical_solution()==generate_function()"
-    check_program = generate_function + '\n' + canonical_solution + '\n' + text_code
-    traceback_tag = True
-    result,exec_globals = execute_program(check_program,traceback_tag)
-    print(result)
-    
+    if result == 'passed':
+        answer = exec_globals.get('answer', '')
+        logging.info('Code execution successful')
+        return True, result, answer, check_program
+    else:
+        answer = ''
+        logging.info(f'Code execution failed. Check code: {check_program} Reason: {result}')
+        return False, result, answer, check_program
