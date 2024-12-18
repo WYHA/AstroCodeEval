@@ -25,7 +25,8 @@ The dataset adheres to a straightforward JSON format with the following fields:
 
 ### Data Fields
 - **test_id**: An identifier for the data sample.
-- **prompt**: A natural language instruction that describes the coding task.
+- **prompt_en**: A natural language instruction in English that describes the coding task.
+- **prompt_zh**: A natural language instruction in Chinese that describes the coding task.
 - **canonical_solution**: The correct implementation for the task outlined in the prompt.
 - **test_code**: A code designed to validate the generated code.
 - **data_source**: Indicates the source of the dataset, such as `astropy` or `astroquery`.
