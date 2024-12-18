@@ -46,7 +46,7 @@ None.
 When evaluating generated Python code against this dataset, execute it in a safe and controlled environment to prevent any potential risks associated with executing untrusted code.
 
 ## License
-This dataset is provided under [Your Chosen License]. Please ensure you understand the terms before using or distributing the dataset.
+This dataset is provided under [MIT]. Please ensure you understand the terms before using or distributing the dataset.
 
 ## Usage
 To use the dataset, follow these steps:
