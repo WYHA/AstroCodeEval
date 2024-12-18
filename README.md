@@ -1,7 +1,7 @@
 # Astronomical Code Generation Evaluation Dataset
 
 ## Dataset Summary
-The Astronomical Code Generation Evaluation Dataset is a specialized collection of 652 programming problems designed to evaluate code generation models within the field of astronomy. Each data in the dataset features a natural language instruction (prompt) paired with a canonical solution—an expected code output—and a test code to validate the generated code.
+The Astronomical Code Generation Evaluation Dataset is a specialized collection of 542 programming problems designed to evaluate code generation models within the field of astronomy. Each data in the dataset features a natural language instruction (prompt) paired with a canonical solution—an expected code output—and a test code to validate the generated code.
 
 ## Languages
 The tasks are written in Python, and the instructions are provided in both English and Chinese.  
