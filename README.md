@@ -30,6 +30,20 @@ The dataset adheres to a straightforward JSON format with the following fields:
 - **test_code**: A code designed to validate the generated code.
 - **data_source**: Indicates the source of the dataset, such as `astropy` or `astroquery`.
 
+## Usage
+To use the dataset, follow these steps:
+
+1. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. To run the code generation and evaluation:
+   ```bash
+   python run_answers.py 
+   python eval.py
+   ```
+
 ## Dataset Creation
 ### Source Data
 
@@ -47,17 +61,3 @@ When evaluating generated Python code against this dataset, execute it in a safe
 
 ## License
 This dataset is provided under [MIT]. Please ensure you understand the terms before using or distributing the dataset.
-
-## Usage
-To use the dataset, follow these steps:
-
-1. Install the required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. To run the code generation and evaluation:
-   ```bash
-   python run_answers.py 
-   python eval.py
-   ```
