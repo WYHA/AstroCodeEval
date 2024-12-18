@@ -1,0 +1,112 @@
+[
+    {
+        "test_id": 9,
+        "prompt_en": "Retrieve the numerical value of the gravitational constant.",
+        "prompt_zh": "获取万有引力常数的数值。\n",
+        "canonical_solution": "def canonical_solution():\n    from astropy.constants import G\n    return G.value\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查两个浮点数是否近似相等\n    return np.isclose(data1, data2, atol=1e-8)\n\n"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    import scipy.constants as const\n    return const.G  # Gravitational constant in m^3 kg^-1 s^-2\n\nprint(generate_function())"
+    },
+    {
+        "test_id": 8,
+        "prompt_en": "Retrieve the value of the elementary charge defined in the current version of Astropy.",
+        "prompt_zh": "获取当前Astropy版本中定义的电子电荷的数值。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy.constants import astropyconst20 as const\n  return const.e.value\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查两个浮点数是否近似相等\n    return np.isclose(data1, data2, atol=1e-8)\n\n"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    from astropy.constants import e\n    elementary_charge_value = e.value\n    return elementary_charge_value\n\n# Execute the function and return the result\ngenerate_function()"
+    },
+    {
+        "test_id": 5,
+        "prompt_en": "Query the numerical value of the speed of light constant expressed in the CGS unit system (centimeters per second).",
+        "prompt_zh": "查询以CGS单位系统（厘米/秒）表示的光速常数的数值。\n",
+        "canonical_solution": "def canonical_solution():\n    from astropy.constants import c\n    return c.cgs  # Returns the speed of light in CGS units\n\n\n",
+        "test_code": [
+            "import numpy as np\ndef test_code(data1, data2):\n    return np.allclose(data1.value, data2.value, atol=1e-8) and data1.unit == data2.unit"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    from astropy.constants import c\n    speed_of_light_cgs = c.cgs.value\n    return speed_of_light_cgs"
+    },
+    {
+        "test_id": 0,
+        "prompt_en": "Smooth the array [1, 4, 5, 6, 5, 7, 8] using a one-dimensional Gaussian filter with a standard deviation of 2, and treat the boundary as extended mode during the convolution calculation. Return the array after processing.",
+        "prompt_zh": "使用标准差为2的一维高斯滤波器对数组[1, 4, 5, 6, 5, 7, 8]进行平滑处理，并在卷积计算时将边界视为扩展模式，返回处理后的数组。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy.convolution import Gaussian1DKernel, convolve\n  gauss = Gaussian1DKernel(stddev=2)\n  return convolve([1, 4, 5, 6, 5, 7, 8], gauss, boundary='extend')\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查形状是否相同\n    if data1.shape != data2.shape:\n        return False\n    # 检查内容是否相同\n    # 使用 np.allclose 而不是 np.array_equal 来处理可能的浮点误差\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    import numpy as np\n    from scipy.ndimage import gaussian_filter1d\n\n    data = np.array([1, 4, 5, 6, 5, 7, 8])\n    smoothed_data = gaussian_filter1d(data, sigma=2, mode='nearest')\n    return smoothed_data\n\ngenerate_function()"
+    },
+    {
+        "test_id": 1,
+        "prompt_en": "Apply a Gaussian smoothing kernel with a standard deviation of 2 to the sequence [1, 2, 3, 4, 5, 6, 7, 8], and return the result after convolution.",
+        "prompt_zh": "对序列[1, 2, 3, 4, 5, 6, 7, 8]应用标准差为2的高斯平滑核，并返回卷积后的结果。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy.convolution import Gaussian1DKernel\n  from astropy.convolution import convolve\n  gauss = Gaussian1DKernel(stddev=2)\n  result = convolve([1, 2, 3, 4, 5, 6, 7, 8], gauss)\n  return result\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查形状是否相同\n    if data1.shape != data2.shape:\n        return False\n    # 检查内容是否相同\n    # 使用 np.allclose 而不是 np.array_equal 来处理可能的浮点误差\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    import numpy as np\n    from scipy.ndimage import gaussian_filter1d\n\n    # Sequence to be smoothed\n    sequence = np.array([1, 2, 3, 4, 5, 6, 7, 8])\n\n    # Apply Gaussian smoothing\n    smoothed_sequence = gaussian_filter1d(sequence, sigma=2)\n    \n    return smoothed_sequence\n\ngenerate_function()"
+    },
+    {
+        "test_id": 3,
+        "prompt_en": "Perform convolution on the list [1, 4, 5, 6, 5, 7, 8] using the convolution kernel `[0.2, 0.6, 0.2]`, and set the boundary extension mode to `extend`.",
+        "prompt_zh": "使用卷积核 `[0.2, 0.6, 0.2]` 对列表 `[1, 4, 5, 6, 5, 7, 8]` 进行卷积处理，并设置边界扩展模式为 `extend`。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy.convolution import convolve\n  result = convolve([1, 4, 5, 6, 5, 7, 8], [0.2, 0.6, 0.2], boundary='extend')\n  return result\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查形状是否相同\n    if data1.shape != data2.shape:\n        return False\n    # 检查内容是否相同\n    # 使用 np.allclose 而不是 np.array_equal 来处理可能的浮点误差\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    import numpy as np\n    \n    data = np.array([1, 4, 5, 6, 5, 7, 8])\n    kernel = np.array([0.2, 0.6, 0.2])\n    \n    # Perform convolution with 'extend' mode\n    convolved_data = np.convolve(data, kernel, mode='same')\n    \n    return convolved_data.tolist()"
+    },
+    {
+        "test_id": 4,
+        "prompt_en": "Perform convolution on the list [1, 2, 3, 4, 5] using a one-dimensional Gaussian kernel with a standard deviation of 2, and return the result after convolution.",
+        "prompt_zh": "使用标准差为2的一维高斯核对列表[1, 2, 3, 4, 5]进行卷积处理，并返回卷积后的结果。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy.convolution import Gaussian1DKernel, convolve\n  gauss = Gaussian1DKernel(stddev=2)\n  result = convolve([1, 2, 3, 4, 5], gauss.array)\n  return result\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查形状是否相同\n    if data1.shape != data2.shape:\n        return False\n    # 检查内容是否相同\n    # 使用 np.allclose 而不是 np.array_equal 来处理可能的浮点误差\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    import numpy as np\n    from scipy.ndimage import gaussian_filter1d\n\n    data = np.array([1, 2, 3, 4, 5])\n    # Apply Gaussian filter (convolution) with a standard deviation of 2\n    result = gaussian_filter1d(data, sigma=2)\n    \n    return result.tolist()\n\ngenerate_function()"
+    },
+    {
+        "test_id": 6,
+        "prompt_en": "Calculate the charge of an electron amplified by a factor of 100, and convert it to electrostatic units (esu).",
+        "prompt_zh": "计算100倍电子的电荷量，并将其转换为静电单位（esu）。\n",
+        "canonical_solution": "def canonical_solution():\n    from astropy.constants import e\n    return 100 * e.esu  # Computes 100 times the charge of an electron in electrostatic units\n\n\n",
+        "test_code": [
+            "import numpy as np\ndef test_code(data1, data2):\n    return np.allclose(data1.value, data2.value, atol=1e-8) and data1.unit == data2.unit"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    # Charge of an electron in coulombs\n    electron_charge_coulombs = -1.602176634e-19 # coulombs\n\n    # Amplify the charge by a factor of 100\n    amplified_charge_coulombs = electron_charge_coulombs * 100\n\n    # Conversion factor from coulombs to electrostatic units (esu)\n    coulombs_to_esu = 2.99792458e9\n\n    # Convert the amplified charge to esu\n    amplified_charge_esu = amplified_charge_coulombs * coulombs_to_esu\n    \n    return amplified_charge_esu\n\n# Execute the function to see the result\ngenerate_function()"
+    },
+    {
+        "test_id": 7,
+        "prompt_en": "Calculate the gravitational force between an object with a mass of 3 solar masses and another object weighing 100 kilograms at a distance of 2.2 astronomical units, and convert the result into Newton units.",
+        "prompt_zh": "计算一个质量为3太阳质量和100公斤物体之间，在距离为2.2天文单位时的引力，并将结果转换为牛顿单位。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy import constants as const\n  from astropy import units as u\n  F = (const.G * 3. * const.M_sun * 100 * u.kg) / (2.2 * u.au) ** 2\n  return F.to(u.N)\n\n\n",
+        "test_code": [
+            "import numpy as np\ndef test_code(data1, data2):\n    return np.allclose(data1.value, data2.value, atol=1e-8) and data1.unit == data2.unit"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    from astropy.constants import G, M_sun\n    from astropy import units as u\n\n    # Define the masses\n    mass_object1 = 3 * M_sun  # 3 solar masses\n    mass_object2 = 100 * u.kg  # 100 kilograms\n\n    # Define the distance\n    distance = 2.2 * u.au  # 2.2 astronomical units\n\n    # Calculate the gravitational force using Newton's law of universal gravitation\n    force = G * mass_object1 * mass_object2 / distance**2\n\n    # Convert the force to Newtons\n    force_in_newtons = force.to(u.N)\n\n    return force_in_newtons"
+    },
+    {
+        "test_id": 2,
+        "prompt_en": "Conduct convolution on the one-dimensional array [1, 4, 5, 6, 5, 7, 8] using the kernel [0.2, 0.6, 0.2], and return the convolution result.",
+        "prompt_zh": "对一维数组[1, 4, 5, 6, 5, 7, 8]应用[0.2, 0.6, 0.2]作为核的卷积，并返回卷积结果。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy.convolution import convolve\n  result = convolve([1, 4, 5, 6, 5, 7, 8], [0.2, 0.6, 0.2])\n  return result\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查形状是否相同\n    if data1.shape != data2.shape:\n        return False\n    # 检查内容是否相同\n    # 使用 np.allclose 而不是 np.array_equal 来处理可能的浮点误差\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
+        ],
+        "data_source": "Astropy",
+        "generate_code": "def generate_function():\n    import numpy as np\n    # Define the array and kernel\n    array = np.array([1, 4, 5, 6, 5, 7, 8])\n    kernel = np.array([0.2, 0.6, 0.2])\n    # Perform the convolution\n    convolution_result = np.convolve(array, kernel, mode='same')\n    return convolution_result"
+    }
+]

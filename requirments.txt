@@ -1,0 +1,4 @@
+astropy
+astroquery
+timeout_decorator
+func_timeout
