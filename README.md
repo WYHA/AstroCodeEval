@@ -1,24 +1,25 @@
 # Astronomical Code Generation Evaluation Dataset
 
 ## Dataset Summary
-The Astronomical Code Generation Evaluation Dataset is a specialized collection of 652 programming tasks designed to evaluate code generation models within the field of astronomy. Each entry in the dataset includes a natural language instruction (prompt) that describes the coding task, a canonical solution representing the expected correct output, and a test code designed to validate the generated code's correctness.
-
-This dataset aims to gauge the ability of code generation models in understanding and applying concepts from common astronomy-related Python libraries—[Astropy](https://github.com/astropy/astropy) and [Astroquery](https://github.com/astropy/astroquery). By providing domain-specific tasks, the dataset ensures that evaluations are relevant and meaningful for applications in astronomical research and analysis.
+The Astronomical Code Generation Evaluation Dataset is a specialized collection of 652 programming problems designed to evaluate code generation models within the field of astronomy. Each data in the dataset features a natural language instruction (prompt) paired with a canonical solution—an expected code output—and a test code to validate the generated code.
 
 ## Supported Tasks and Leaderboards
 ### Languages
-The tasks are written in Python, and the natural language instructions are in English.
+The tasks are written in Python, and the instructions are provided in both English and Chinese.  
 
 ## Dataset Structure
 The dataset adheres to a straightforward JSON format with the following fields:
 
 ```json
 {
-    "test_id": "test/0",
-    "prompt": "",
-    "canonical_solution": "",
-    "test_code": "",
-    "data_source": "astropy/astroquery"
+    "test_id": 0,
+        "prompt_en": "Smooth the array [1, 4, 5, 6, 5, 7, 8] using a one-dimensional Gaussian filter with a standard deviation of 2, and treat the boundary as extended mode during the convolution calculation. Return the array after processing.",
+        "prompt_zh": "使用标准差为2的一维高斯滤波器对数组[1, 4, 5, 6, 5, 7, 8]进行平滑处理，并在卷积计算时将边界视为扩展模式，返回处理后的数组。\n",
+        "canonical_solution": "def canonical_solution():\n  from astropy.convolution import Gaussian1DKernel, convolve\n  gauss = Gaussian1DKernel(stddev=2)\n  return convolve([1, 4, 5, 6, 5, 7, 8], gauss, boundary='extend')\n\n\n",
+        "test_code": [
+            "\nimport numpy as np\n\ndef test_code(data1, data2):\n    # 检查形状是否相同\n    if data1.shape != data2.shape:\n        return False\n    # 检查内容是否相同\n    # 使用 np.allclose 而不是 np.array_equal 来处理可能的浮点误差\n    return np.allclose(data1, data2, atol=1e-8, equal_nan=True)\n\n"
+        ],
+        "data_source": "Astropy"
 }
 ```
 
@@ -66,4 +67,6 @@ astronomical_code_generation_dataset/
 ```
 
 ## License
-MIT License
+This dataset is provided under [Your Chosen License]. Please ensure you understand the terms before using or distributing the dataset.
+
+This structure will help you keep your dataset organized and make it easier for users to navigate and understand how to use the dataset effectively.
